@@ -6,6 +6,8 @@ import MainLayout from '../../layouts/MainLayout';
 import Button from '../../components/ui/Button';
 import InviteModal from '../../components/InviteModal';
 import CreateProjectModal from '../../components/CreateProjectModal';
+import AIEvaluationModal from '../../components/AIEvaluationModal';
+import { fetchAIEvaluation } from '../../store/slices/teamSlice';
 import {
   Users,
   Search,
@@ -23,11 +25,20 @@ import {
 
 const TeamManagement = () => {
   const dispatch = useDispatch();
+  const { user: currentUser } = useSelector((state) => state.auth);
   const { members: teamMembers, invitations, loading: teamLoading } = useSelector((state) => state.team);
   const { items: projects, loading: projectsLoading } = useSelector((state) => state.projects);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [selectedAIUser, setSelectedAIUser] = useState(null);
+
+  const handleGenerateAIReport = (user) => {
+    setSelectedAIUser(user);
+    dispatch(fetchAIEvaluation(user._id));
+    setIsAIModalOpen(true);
+  };
 
   useEffect(() => {
     dispatch(fetchMembers());
@@ -148,9 +159,20 @@ const TeamManagement = () => {
                             </div>
                           </td>
                           <td className="px-8 py-6 text-right">
-                            <button className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-white rounded-xl transition-all border border-transparent hover:border-indigo-100">
-                              <MoreVertical size={18} />
-                            </button>
+                            <div className="flex justify-end gap-2">
+                              {currentUser?.role === 'Admin' && (
+                                <button 
+                                  onClick={() => handleGenerateAIReport(member)}
+                                  className="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 border border-indigo-100 font-black text-[10px] uppercase tracking-widest rounded-lg transition-colors flex items-center gap-1.5"
+                                  title="Generate AI Productivity Report"
+                                >
+                                  ✨ AI Report
+                                </button>
+                              )}
+                              <button className="p-2.5 text-slate-300 hover:text-indigo-600 hover:bg-white rounded-xl transition-all shadow-sm border border-transparent hover:border-indigo-100">
+                                <MoreVertical size={18} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -194,6 +216,12 @@ const TeamManagement = () => {
       <CreateProjectModal
         isOpen={isCreateProjectModalOpen}
         onClose={() => setIsCreateProjectModalOpen(false)}
+      />
+
+      <AIEvaluationModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        user={selectedAIUser}
       />
     </MainLayout>
   );

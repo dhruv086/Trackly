@@ -51,7 +51,7 @@ const Navbar = () => {
           <div className="w-10 h-10 rounded-2xl bg-white border-2 border-slate-100 p-0.5 shadow-sm group-hover:border-indigo-200 transition-all">
             <div className="w-full h-full rounded-[0.85rem] bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-xs overflow-hidden">
               {user?.avatar
-                ? <img src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:5001${user.avatar}`} alt="avatar" className="w-full h-full object-cover" />
+                ? <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
                 : getInitials(user?.username)}
             </div>
           </div>

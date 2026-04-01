@@ -48,6 +48,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Member",
     },
+    aiEvaluation: {
+      productivityScore: { type: Number, default: 0 },
+      workStyle: { type: String, default: "" },
+      incrementImpact: { type: String, default: "" },
+      summary: { type: String, default: "" },
+      lastEvaluatedAt: { type: Date, default: null },
+    },
     refreshToken: {
       type: String,
     },

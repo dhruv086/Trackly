@@ -54,6 +54,7 @@ import analyticsRouter   from "./routes/analytics.routes.js";
 import adminRouter       from "./routes/admin.routes.js";
 import attachmentRouter  from "./routes/attachment.routes.js";
 import chatRouter        from "./routes/chat.routes.js";
+import aiRouter          from "./routes/ai.routes.js";
 
 app.use("/api/v1/auth",          authRouter);
 app.use("/api/v1/projects",      projectRouter);
@@ -64,6 +65,7 @@ app.use("/api/v1/analytics",     analyticsRouter);
 app.use("/api/v1/admin",         adminRouter);
 app.use("/api/v1/attachments",   attachmentRouter);
 app.use("/api/v1/chat",          chatRouter);
+app.use("/api/v1/ai",            aiRouter);
 
 // ─── Socket.IO ────────────────────────────────────────────────────────────────
 const io = new SocketIO(httpServer, {

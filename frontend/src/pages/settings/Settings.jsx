@@ -239,7 +239,7 @@ const Settings = () => {
                       {avatarPreview ? (
                         <img src={avatarPreview} alt="avatar preview" className="w-full h-full object-cover" />
                       ) : user?.avatar ? (
-                        <img src={`http://localhost:5001${user.avatar}`} alt="avatar" className="w-full h-full object-cover" />
+                        <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
                       ) : (
                         <span>{user?.username?.[0]?.toUpperCase() || 'U'}</span>
                       )}

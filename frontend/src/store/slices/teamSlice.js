@@ -10,6 +10,15 @@ export const fetchMembers = createAsyncThunk('team/fetchMembers', async (_, { re
   }
 });
 
+export const fetchAIEvaluation = createAsyncThunk('team/fetchAIEvaluation', async (userId, { rejectWithValue }) => {
+  try {
+    const response = await API.get(`/ai/evaluate-user/${userId}`);
+    return response.data.evaluation;
+  } catch (error) {
+    return rejectWithValue(error.response.data.message);
+  }
+});
+
 export const inviteMemberAsync = createAsyncThunk('team/inviteMember', async (memberData, { rejectWithValue }) => {
   try {
     const response = await API.post('/team/invite', memberData);
@@ -42,6 +51,8 @@ const initialState = {
   projectMembers: [],
   invitations: [],
   loading: false,
+  aiEvaluation: null,
+  aiEvaluationLoading: false,
 };
 
 const teamSlice = createSlice({
@@ -69,6 +80,18 @@ const teamSlice = createSlice({
       })
       .addCase(removeMemberFromProjectAsync.fulfilled, (state, action) => {
         state.projectMembers = action.payload.members || [];
+      })
+      .addCase(fetchAIEvaluation.pending, (state) => {
+        state.aiEvaluationLoading = true;
+        state.aiEvaluation = null;
+      })
+      .addCase(fetchAIEvaluation.fulfilled, (state, action) => {
+        state.aiEvaluationLoading = false;
+        state.aiEvaluation = action.payload;
+      })
+      .addCase(fetchAIEvaluation.rejected, (state) => {
+        state.aiEvaluationLoading = false;
+        state.aiEvaluation = null;
       });
   }
 });

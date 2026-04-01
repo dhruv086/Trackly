@@ -10,19 +10,23 @@ import {
   serveAttachment,
 } from "../controllers/attachment.controller.js";
 
-// ─── Multer — disk storage, all types, no size limit ──────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // relative to backend root
-  },
-  filename: (req, file, cb) => {
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
-    const ext = path.extname(file.originalname);
-    cb(null, `${unique}${ext}`);
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { cloudinary } from "../utils/cloudinary.js";
+
+// ─── Multer — Cloudinary storage ──────────────────────────────────────────────
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "trackly/attachments",
+    resource_type: "auto", // accept all file types (images, pdfs, etc)
+    public_id: (req, file) => {
+      const unique = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+      return unique;
+    },
   },
 });
 
-const upload = multer({ storage }); // no limits, all file types
+const upload = multer({ storage });
 
 const router = Router();
 router.use(verifyJWT);

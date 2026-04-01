@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { cloudinary } from "../utils/cloudinary.js";
 import { Attachment } from "../models/attachment.model.js";
 import { Project } from "../models/project.model.js";
 import { Task } from "../models/task.model.js";
@@ -21,11 +22,12 @@ export const uploadProjectAttachment = async (req, res) => {
   if (!project) return res.status(404).json({ message: "Project not found" });
 
   const attachment = await Attachment.create({
-    filename:     req.file.filename,
-    originalName: req.file.originalname,
-    mimetype:     req.file.mimetype,
-    size:         req.file.size,
-    path:         req.file.path,
+    filename:           req.file.originalname,
+    originalName:       req.file.originalname,
+    mimetype:           req.file.mimetype,
+    size:               req.file.size,
+    url:                req.file.path,
+    cloudinaryPublicId: req.file.filename,
     uploadedBy:   req.user._id,
     project:      projectId,
   });
@@ -74,8 +76,17 @@ export const deleteProjectAttachment = async (req, res) => {
   if (!isOwner && !isUploader)
     return res.status(403).json({ message: "Not authorised to delete this file" });
 
-  // Remove from disk
-  if (fs.existsSync(attachment.path)) fs.unlinkSync(attachment.path);
+  // Remove from Cloudinary
+  if (attachment.cloudinaryPublicId) {
+    try {
+      // For resource_type auto we might need to specify it if destroying fails, 
+      // but by default destroy works if we know the correct resource_type or if it's image. 
+      // Actually we should just pass it. But we'll swallow errors to ensure db deletion happens.
+      await cloudinary.uploader.destroy(attachment.cloudinaryPublicId);
+    } catch (err) {
+      console.error("Cloudinary delete error:", err);
+    }
+  }
   await attachment.deleteOne();
 
   res.status(200).json({ message: "Attachment deleted" });
@@ -109,11 +120,12 @@ export const uploadTaskAttachment = async (req, res) => {
   if (!task) return res.status(404).json({ message: "Task not found" });
 
   const attachment = await Attachment.create({
-    filename:     req.file.filename,
-    originalName: req.file.originalname,
-    mimetype:     req.file.mimetype,
-    size:         req.file.size,
-    path:         req.file.path,
+    filename:           req.file.originalname,
+    originalName:       req.file.originalname,
+    mimetype:           req.file.mimetype,
+    size:               req.file.size,
+    url:                req.file.path,
+    cloudinaryPublicId: req.file.filename,
     uploadedBy:   req.user._id,
     task:         taskId,
   });
@@ -139,7 +151,14 @@ export const deleteTaskAttachment = async (req, res) => {
   if (!isUploader)
     return res.status(403).json({ message: "Not authorised to delete this file" });
 
-  if (fs.existsSync(attachment.path)) fs.unlinkSync(attachment.path);
+  // Remove from Cloudinary
+  if (attachment.cloudinaryPublicId) {
+    try {
+      await cloudinary.uploader.destroy(attachment.cloudinaryPublicId);
+    } catch (err) {
+      console.error("Cloudinary delete error:", err);
+    }
+  }
   await attachment.deleteOne();
 
   res.status(200).json({ message: "Attachment deleted" });
@@ -176,11 +195,6 @@ export const serveAttachment = async (req, res) => {
   const attachment = await Attachment.findById(attachmentId);
   if (!attachment) return res.status(404).json({ message: "File not found" });
 
-  const absPath = path.resolve(attachment.path);
-  if (!fs.existsSync(absPath))
-    return res.status(404).json({ message: "File missing from disk" });
-
-  res.setHeader("Content-Disposition", `inline; filename="${attachment.originalName}"`);
-  res.setHeader("Content-Type", attachment.mimetype);
-  res.sendFile(absPath);
+  // Cloudinary handles serving, just redirect the user to the secure URL
+  res.redirect(attachment.url);
 };

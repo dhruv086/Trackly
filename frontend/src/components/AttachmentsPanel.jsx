@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
-const BASE_URL = 'http://localhost:5001';
+
 
 function fileIcon(mime = '') {
   if (mime.startsWith('image/'))       return { icon: Image,     color: 'text-violet-500', bg: 'bg-violet-50' };
@@ -80,10 +80,11 @@ const AttachmentsPanel = ({
   };
 
   const handleOpen = (attachment) => {
-    // Mark viewed, then open in new tab
+    // Mark viewed in background, then open Cloudinary URL in new tab
     onView(attachment._id);
-    const url = `${BASE_URL}/api/v1/attachments/file/${attachment._id}`;
-    window.open(url, '_blank', 'noopener');
+    if (attachment.url) {
+      window.open(attachment.url, '_blank', 'noopener');
+    }
   };
 
   return (

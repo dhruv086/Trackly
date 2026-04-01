@@ -211,8 +211,8 @@ export const uploadAvatarController = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Build public URL — Express serves /public as static root
-    const avatarUrl = `/avatars/${req.file.filename}`;
+    // Cloudinary URL is returned in req.file.path
+    const avatarUrl = req.file.path;
 
     const user = await User.findByIdAndUpdate(
       req.user._id,

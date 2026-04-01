@@ -51,7 +51,7 @@ const Login = () => {
           </div>
         )}
         <Input
-          label="Username or Email"
+          label="Username"
           type="text"
           placeholder="username"
           value={formData.username}

@@ -4,9 +4,10 @@ const attachmentSchema = new mongoose.Schema(
   {
     filename:     { type: String, required: true },       // stored name on disk
     originalName: { type: String, required: true },       // user-facing name
-    mimetype:     { type: String, required: true },
-    size:         { type: Number, required: true },       // bytes
-    path:         { type: String, required: true },       // relative disk path
+    mimetype:           { type: String, required: true },
+    size:               { type: Number, required: true },       // bytes
+    url:                { type: String, required: true },       // Cloudinary URL
+    cloudinaryPublicId: { type: String, required: true },       // Used to delete from Cloudinary
 
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
