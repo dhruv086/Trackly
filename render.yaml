@@ -11,7 +11,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: FRONTEND_URL
-        value: https://trackly-frontend.onrender.com # Placeholder - update this matching your frontend name
+        value: https://trackly-frontend-l9lb.onrender.com
       # Secrets to provide in Render dashboard overrides:
       - key: MONGO_URI
         sync: false
