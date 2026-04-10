@@ -28,18 +28,7 @@ const TaskToolbar = ({ onSearch, onFilter, onSort, onAddTaskClick, showAddButton
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 mr-4">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                {String.fromCharCode(64 + i)}
-              </div>
-            ))}
-          </div>
-          <div className="w-8 h-8 rounded-full border-2 border-white bg-indigo-50 flex items-center justify-center text-[10px] font-bold text-indigo-600">
-            +5
-          </div>
-        </div>
+       
         {showAddButton && (
           <button
             onClick={onAddTaskClick}
