@@ -20,9 +20,9 @@ dotenv.config({ path: "./.env" });
 const app = express();
 const httpServer = createServer(app);
 
-const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://localhost:5174")
+const allowedOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || "http://localhost:5173,http://localhost:5174")
   .split(",")
-  .map((o) => o.trim());
+  .map((o) => o.trim().replace(/\/$/, ""));
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 app.use(cors({
