@@ -60,7 +60,7 @@ const AIEvaluationModal = ({ isOpen, onClose, user }) => {
             {aiEvaluationLoading ? (
               <div className="flex flex-col items-center justify-center h-64 space-y-4">
                 <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-                <p className="text-indigo-400 font-bold animate-pulse uppercase tracking-[0.2em] text-xs">Gemini AI is analyzing...</p>
+                <p className="text-indigo-400 font-bold animate-pulse uppercase tracking-[0.2em] text-xs">Analyzing...</p>
               </div>
             ) : aiEvaluation ? (
               <div className="space-y-6">
