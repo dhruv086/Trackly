@@ -13,7 +13,7 @@ services:
       - key: FRONTEND_URL
         value: https://trackly-frontend-l9lb.onrender.com
       # Secrets to provide in Render dashboard overrides:
-      - key: MONGO_URI
+      - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
         sync: false
